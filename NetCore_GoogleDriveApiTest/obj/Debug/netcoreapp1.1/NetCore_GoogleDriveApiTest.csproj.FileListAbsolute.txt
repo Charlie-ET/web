@@ -7,3 +7,5 @@ C:\web\NetCore_GoogleDriveApiTest\obj\Debug\netcoreapp1.1\NetCore_GoogleDriveApi
 C:\web\NetCore_GoogleDriveApiTest\bin\Debug\netcoreapp1.1\NetCore_GoogleDriveApiTest.pdb
 C:\web\NetCore_GoogleDriveApiTest\obj\Debug\netcoreapp1.1\NetCore_GoogleDriveApiTest.dll
 C:\web\NetCore_GoogleDriveApiTest\obj\Debug\netcoreapp1.1\NetCore_GoogleDriveApiTest.pdb
+C:\web\NetCore_GoogleDriveApiTest\bin\Debug\netcoreapp1.1\GoogleOAuth.dll
+C:\web\NetCore_GoogleDriveApiTest\bin\Debug\netcoreapp1.1\GoogleOAuth.pdb

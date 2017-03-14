@@ -1,14 +1,15 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v1.1",
-    "signature": "f464d74eda959483f48684a964b8e9c211c4e3ca"
+    "signature": "1e60fe45e4bebc8f98c26148a96d8d5c02d6c295"
   },
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v1.1": {
       "netcore_googledriveapitest/1.0.0": {
         "dependencies": {
-          "Google.Apis.Drive.v3": "1.21.0.789"
+          "Google.Apis.Drive.v3": "1.21.0.789",
+          "GoogleOAuth": "1.0.0"
         },
         "runtime": {
           "NetCore_GoogleDriveApiTest.dll": {}
@@ -32,6 +33,15 @@
           "lib/netstandard1.3/Google.Apis.Auth.dll": {}
         }
       },
+      "google.apis.books.v1/1.21.0.705": {
+        "dependencies": {
+          "Google.Apis": "1.21.0",
+          "Google.Apis.Auth": "1.21.0"
+        },
+        "runtime": {
+          "lib/netstandard1.3/Google.Apis.Books.v1.dll": {}
+        }
+      },
       "google.apis.core/1.21.0": {
         "dependencies": {
           "Newtonsoft.Json": "9.0.1"
@@ -49,6 +59,30 @@
           "lib/netstandard1.3/Google.Apis.Drive.v3.dll": {}
         }
       },
+      "microsoft.extensions.logging.abstractions/1.1.0": {
+        "runtime": {
+          "lib/netstandard1.1/Microsoft.Extensions.Logging.Abstractions.dll": {}
+        }
+      },
+      "microsoft.extensions.primitives/1.1.0": {
+        "dependencies": {
+          "System.Runtime.CompilerServices.Unsafe": "4.3.0"
+        },
+        "runtime": {
+          "lib/netstandard1.0/Microsoft.Extensions.Primitives.dll": {}
+        }
+      },
+      "microsoft.net.http.server/1.1.0": {
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "1.1.0",
+          "Microsoft.Extensions.Primitives": "1.1.0",
+          "System.Diagnostics.Contracts": "4.3.0",
+          "System.Net.WebSockets": "4.3.0"
+        },
+        "runtime": {
+          "lib/netstandard1.3/Microsoft.Net.Http.Server.dll": {}
+        }
+      },
       "newtonsoft.json/9.0.1": {
         "dependencies": {
           "System.Runtime.Serialization.Primitives": "4.1.1"
@@ -57,9 +91,34 @@
           "lib/netstandard1.0/Newtonsoft.Json.dll": {}
         }
       },
+      "system.diagnostics.contracts/4.3.0": {
+        "runtime": {
+          "lib/netstandard1.0/System.Diagnostics.Contracts.dll": {}
+        }
+      },
+      "system.net.websockets/4.3.0": {
+        "runtime": {
+          "lib/netstandard1.3/System.Net.WebSockets.dll": {}
+        }
+      },
+      "system.runtime.compilerservices.unsafe/4.3.0": {
+        "runtime": {
+          "lib/netstandard1.0/System.Runtime.CompilerServices.Unsafe.dll": {}
+        }
+      },
       "system.runtime.serialization.primitives/4.1.1": {
         "runtime": {
           "lib/netstandard1.3/System.Runtime.Serialization.Primitives.dll": {}
+        }
+      },
+      "googleoauth/1.0.0": {
+        "dependencies": {
+          "Google.Apis.Auth": "1.21.0",
+          "Google.Apis.Books.v1": "1.21.0.705",
+          "Microsoft.Net.Http.Server": "1.1.0"
+        },
+        "runtime": {
+          "GoogleOAuth.dll": {}
         }
       }
     }
@@ -84,6 +143,13 @@
       "path": "google.apis.auth/1.21.0",
       "hashPath": "google.apis.auth.1.21.0.nupkg.sha512"
     },
+    "google.apis.books.v1/1.21.0.705": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-JPuco52des2r/ZhGvIoymkip/s50InGKtYH1yrzMUDLCgSXwrMFcxOpiTp1uMOS+zRcZ07hhypW18Pa5JoyCGA==",
+      "path": "google.apis.books.v1/1.21.0.705",
+      "hashPath": "google.apis.books.v1.1.21.0.705.nupkg.sha512"
+    },
     "google.apis.core/1.21.0": {
       "type": "package",
       "serviceable": true,
@@ -98,6 +164,27 @@
       "path": "google.apis.drive.v3/1.21.0.789",
       "hashPath": "google.apis.drive.v3.1.21.0.789.nupkg.sha512"
     },
+    "microsoft.extensions.logging.abstractions/1.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-5zDtM0Dal+pwDIj49PPq9Y8SYu6z70v55VDx70rOuquLTlaCIdv9uItkcp9c1FH/ASNdfANVnh1cTwd85dyE+Q==",
+      "path": "microsoft.extensions.logging.abstractions/1.1.0",
+      "hashPath": "microsoft.extensions.logging.abstractions.1.1.0.nupkg.sha512"
+    },
+    "microsoft.extensions.primitives/1.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-GhQG5CBUR9/czBLTblt1giKBkfvHVDeppWd6KIgPyexrspECqzzSW5IXe0STTTs2NlUp9vIFwjSWG8O9c74R9g==",
+      "path": "microsoft.extensions.primitives/1.1.0",
+      "hashPath": "microsoft.extensions.primitives.1.1.0.nupkg.sha512"
+    },
+    "microsoft.net.http.server/1.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Hbw0lG3aY3BxGFru83IT6M1K85tZImyfQkQI5DoPIjtOQ2fmoqsP/xE0kvUB+fG12znVdVRcoByKoex1fyVCfQ==",
+      "path": "microsoft.net.http.server/1.1.0",
+      "hashPath": "microsoft.net.http.server.1.1.0.nupkg.sha512"
+    },
     "newtonsoft.json/9.0.1": {
       "type": "package",
       "serviceable": true,
@@ -105,12 +192,38 @@
       "path": "newtonsoft.json/9.0.1",
       "hashPath": "newtonsoft.json.9.0.1.nupkg.sha512"
     },
+    "system.diagnostics.contracts/4.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-eelRRbnm+OloiQvp9CXS0ixjNQldjjkHO4iIkR5XH2VIP8sUB/SIpa1TdUW6/+HDcQ+MlhP3pNa1u5SbzYuWGA==",
+      "path": "system.diagnostics.contracts/4.3.0",
+      "hashPath": "system.diagnostics.contracts.4.3.0.nupkg.sha512"
+    },
+    "system.net.websockets/4.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-u6fFNY5q4T8KerUAVbya7bR6b7muBuSTAersyrihkcmE5QhEOiH3t5rh4il15SexbVlpXFHGuMwr/m8fDrnkQg==",
+      "path": "system.net.websockets/4.3.0",
+      "hashPath": "system.net.websockets.4.3.0.nupkg.sha512"
+    },
+    "system.runtime.compilerservices.unsafe/4.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-rcnXA1U9W3QUtMSGoyoNHH6w4V5Rxa/EKXmzpORUYlDAlDB34hIQoU57ATXl8xHa83VvzRm6PcElEizgUd7U5w==",
+      "path": "system.runtime.compilerservices.unsafe/4.3.0",
+      "hashPath": "system.runtime.compilerservices.unsafe.4.3.0.nupkg.sha512"
+    },
     "system.runtime.serialization.primitives/4.1.1": {
       "type": "package",
       "serviceable": true,
       "sha512": "sha512-HZ6Du5QrTG8MNJbf4e4qMO3JRAkIboGT5Fk804uZtg3Gq516S7hAqTm2UZKUHa7/6HUGdVy3AqMQKbns06G/cg==",
       "path": "system.runtime.serialization.primitives/4.1.1",
       "hashPath": "system.runtime.serialization.primitives.4.1.1.nupkg.sha512"
+    },
+    "googleoauth/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
     }
   }
 }
