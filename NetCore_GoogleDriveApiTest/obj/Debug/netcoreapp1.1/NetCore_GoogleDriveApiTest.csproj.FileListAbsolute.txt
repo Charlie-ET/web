@@ -1,9 +1,0 @@
-C:\web\NetCore_GoogleDriveApiTest\bin\Debug\netcoreapp1.1\NetCore_GoogleDriveApiTest.deps.json
-C:\web\NetCore_GoogleDriveApiTest\bin\Debug\netcoreapp1.1\NetCore_GoogleDriveApiTest.runtimeconfig.json
-C:\web\NetCore_GoogleDriveApiTest\bin\Debug\netcoreapp1.1\NetCore_GoogleDriveApiTest.runtimeconfig.dev.json
-C:\web\NetCore_GoogleDriveApiTest\bin\Debug\netcoreapp1.1\NetCore_GoogleDriveApiTest.dll
-C:\web\NetCore_GoogleDriveApiTest\obj\Debug\netcoreapp1.1\NetCore_GoogleDriveApiTest.csprojResolveAssemblyReference.cache
-C:\web\NetCore_GoogleDriveApiTest\obj\Debug\netcoreapp1.1\NetCore_GoogleDriveApiTest.AssemblyInfo.cs
-C:\web\NetCore_GoogleDriveApiTest\bin\Debug\netcoreapp1.1\NetCore_GoogleDriveApiTest.pdb
-C:\web\NetCore_GoogleDriveApiTest\obj\Debug\netcoreapp1.1\NetCore_GoogleDriveApiTest.dll
-C:\web\NetCore_GoogleDriveApiTest\obj\Debug\netcoreapp1.1\NetCore_GoogleDriveApiTest.pdb
