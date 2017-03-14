@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\GoogleOAuth\GoogleOAuth\GoogleOAuth.csproj" />
+    <ProjectReference Include="..\GoogleOAuth\GoogleOAuth.csproj" />
   </ItemGroup>
 
 </Project>
