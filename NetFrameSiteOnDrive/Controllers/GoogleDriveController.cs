@@ -21,28 +21,44 @@ namespace NetFrameSiteOnDrive.Controllers
         //    return Content("something");
         //}
 
+        private static Drive s_drive = null;
         public async Task<ActionResult> IndexAsync(CancellationToken cancellationToken)
         {
-            var result = await new AuthorizationCodeMvcApp(this, new AppFlowMetadata()).
-                AuthorizeAsync(cancellationToken);
-
-            if (result.Credential != null)
+            if (s_drive == null)
             {
-                var service = new DriveService(new BaseClientService.Initializer
+                var result = await new AuthorizationCodeMvcApp(this, new AppFlowMetadata()).
+                    AuthorizeAsync(cancellationToken);
+
+                if (result.Credential != null)
                 {
-                    HttpClientInitializer = result.Credential,
-                    ApplicationName = "ASP.NET MVC Sample"
-                });
+                    var service = new DriveService(new BaseClientService.Initializer
+                    {
+                        HttpClientInitializer = result.Credential,
+                        ApplicationName = "Site on Google Drive"
+                    });
 
-                // YOUR CODE SHOULD BE HERE..
-                // SAMPLE CODE:
-                var list = await service.Files.List().ExecuteAsync();
-                return Content("FILE COUNT IS: " + list.Files.Count());
+                    s_drive = new Drive(service);
+                }
+                else
+                {
+                    return new RedirectResult(result.RedirectUri);
+                }
             }
-            else
+
+            if (s_drive == null)
             {
-                return new RedirectResult(result.RedirectUri);
+                throw new System.Exception("s_drive is null");
             }
+
+            var files = await s_drive.EnumerateFiles(rootFolder: "mima");
+            if (files?.Count() == 0)
+            {
+                return Content("No file is found.");
+            }
+            //return Content(string.Join("<b/>", files.Select(x => x.Name)));
+
+            return Content(await s_drive.Download(files.First()));
         }
     }
 }
+
