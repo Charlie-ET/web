@@ -5,6 +5,7 @@ myApp.controller('mainCtrl', ['$scope', '$http', function ($scope, $http) {
     $scope.inputType = 'password';
     $scope.waitPassword = true
     $scope.tableContent = ''
+    $scope.tableJson
 
     // Hide & show password function
     $scope.hideShowPassword = function () {
@@ -20,6 +21,8 @@ myApp.controller('mainCtrl', ['$scope', '$http', function ($scope, $http) {
         $http.get("http://localhost:49906/GoogleDrive/table").then(
                 function (successResponse) {
                     $scope.tableContent = successResponse.data;
+                    $scope.tableJson = angular.fromJson($scope.tableContent)
+                    $scope.firstuser = $scope.tableJson.records[0].user
                 },
                 function (errorResponse) {
                     // handle errors here

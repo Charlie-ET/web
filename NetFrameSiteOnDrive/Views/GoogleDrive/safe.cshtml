@@ -1,49 +1,53 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <title></title>
+	<title></title>
 	<meta charset="utf-8" />
-    <script src="http://code.angularjs.org/1.2.13/angular.min.js"></script>
-    <script src="~/Scripts/GoogleDrive/main.js" ></script>
-    <link rel="stylesheet" href="~/Content/GoogleDrive/main.css" />
-    <link rel="stylesheet" href="~/Content/GoogleDrive/table.css" />
+	<script src="http://code.angularjs.org/1.2.13/angular.min.js"></script>
+	<script src="~/Scripts/GoogleDrive/main.js" ></script>
+	<link rel="stylesheet" href="~/Content/GoogleDrive/main.css" />
+	<link rel="stylesheet" href="~/Content/GoogleDrive/table.css" />
 
 </head>
 <body>
-    <section ng-app="myApp" ng-controller="mainCtrl">
-        <div ng-show="waitPassword" >
-            <input type="{{inputType}}" placeholder="Put your password" ng-model="passcode"/>
-            <input type="checkbox" id="checkbox" ng-model="passwordCheckbox" ng-click="hideShowPassword()" />
-            <label for="checkbox" ng-if="passwordCheckbox">Hide password</label>
-            <label for="checkbox" ng-if="!passwordCheckbox">Show password</label>
-            <p />
-            <button ng-click="okPassword()">OK</button> 
-        </div>
-        <div ng-hide="waitPassword">
-            <p>{{passcode}}</p>
-            <p>{{tableContent}}</p>
-            <!-- table -->
-            <table>
-                <tr>
-                    <td>&nbsp;</td>
-                    <td>User Name</td>
-                    <td>Password</td>
-                    <td>Description</td>
-                </tr>
-                <tr>
-                    <td>gmail</td>
-                    <td>deren@gmail.com</td>
-                    <td>i don't tell you</td>
-                    <td>just a toy</td>
-                </tr>
-                <tr>
-                    <td>boa</td>
-                    <td>deren-boa</td>
-                    <td>treehouse</td>
-                    <td>Bank Of America</td>
-                </tr>
-            </table>
-        </div>
-    </section>
+	<section ng-app="myApp" ng-controller="mainCtrl">
+		<div ng-show="waitPassword" >
+			<input type="{{inputType}}" placeholder="Put your password" ng-model="passcode"/>
+			<input type="checkbox" id="checkbox" ng-model="passwordCheckbox" ng-click="hideShowPassword()" />
+			<label for="checkbox" ng-if="passwordCheckbox">Hide password</label>
+			<label for="checkbox" ng-if="!passwordCheckbox">Show password</label>
+			<p />
+			<button ng-click="okPassword()">OK</button> 
+		</div>
+
+		<div ng-hide="waitPassword">
+			<!-- table -->
+			<table>
+				<tr>
+					<td>&nbsp;</td>
+					<td>User Name</td>
+					<td>Password</td>
+					<td>Description</td>
+				</tr>
+				<tr ng-repeat="x in tableJson.records">
+					<td>{{x.id}}</td>
+					<td>{{x.user}}</td>
+					<td>{{x.pass}}</td>
+					<td>{{x.desc}}</td>
+				</tr>
+			</table>
+		</div>
+
+		<div class="debug" ng-show="false">
+			<p>{{passcode}}</p>
+
+			<p>{{tableContent}}</p>
+			<p />
+
+			<p>{{firstuser}}</p>
+			<p />
+		</div>
+
+	</section>
 </body>
 </html>
