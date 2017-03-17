@@ -1,0 +1,15 @@
+﻿* {
+    font-family: Verdana, monospace;
+}
+
+section {
+  background: #fff;
+  box-shadow: 2px 2px 0 1px rgba(0, 0, 0, .1);
+  margin: 3em auto;
+  padding: 2em initial;
+  width: 800px;
+}
+input {
+  font-size: 1em;
+  padding: 1em;
+}
