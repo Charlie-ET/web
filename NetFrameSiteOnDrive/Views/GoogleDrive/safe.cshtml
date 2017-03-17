@@ -32,7 +32,9 @@
 				<tr ng-repeat="x in tableJson.records">
 					<td>{{x.id}}</td>
 					<td>{{x.user}}</td>
-					<td>{{x.pass}}</td>
+					<td>
+                        <input class="tablePassInput" type="password" value="{{x.pass}}">
+                    </td>
 					<td>{{x.desc}}</td>
 				</tr>
 			</table>

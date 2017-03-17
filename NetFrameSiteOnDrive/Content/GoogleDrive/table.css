@@ -33,3 +33,10 @@ tr:nth-child(odd) td {
 caption {
   padding: 10px;
 }
+
+.tablePassInput {
+  font-size: 0.8em;
+  padding: 0em;
+  color:burlywood;
+}
+
