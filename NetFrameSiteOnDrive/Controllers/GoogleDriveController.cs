@@ -57,7 +57,19 @@ namespace NetFrameSiteOnDrive.Controllers
             }
             //return Content(string.Join("<b/>", files.Select(x => x.Name)));
 
-            return Content(await s_drive.Download(files.First()));
+            // return Content(await s_drive.Download(files.First()));
+            return View(nameof(Safe));
+        }
+
+        // GET: GoogleDrive/safe
+        public ActionResult Safe()
+        {
+            return View();
+        }
+
+        public string Table()
+        {
+            return "table content";
         }
     }
 }
