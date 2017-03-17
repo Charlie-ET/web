@@ -186,6 +186,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AuthCallbackController.cs" />
     <Compile Include="Controllers\GoogleDriveController.cs" />
+    <Compile Include="Controllers\MoonController.cs" />
     <Compile Include="Drive.cs" />
     <Compile Include="FlowMetadata.cs" />
     <Compile Include="Global.asax.cs">
@@ -194,10 +195,22 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\GoogleDrive\main.css" />
+    <Content Include="Content\GoogleDrive\table.css" />
+    <Content Include="Content\Moon\password.css" />
+    <Content Include="Content\Moon\style.css" />
+    <Content Include="Content\Moon\table.css" />
     <Content Include="Global.asax" />
     <Content Include="ApplicationInsights.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Views\Moon\Index.cshtml" />
+    <Content Include="Scripts\GoogleDrive\main.js" />
+    <Content Include="Scripts\Moon\angularJS_password.js" />
+    <Content Include="Scripts\Moon\script.js" />
+    <None Include="Views\Moon\table.cshtml" />
+    <None Include="Views\Moon\Angular.cshtml" />
+    <None Include="Views\GoogleDrive\safe.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -210,12 +223,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Content\" />
     <Folder Include="fonts\" />
     <Folder Include="Models\" />
-    <Folder Include="Scripts\" />
     <Folder Include="Views\AuthCallback\" />
-    <Folder Include="Views\GoogleDrive\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
