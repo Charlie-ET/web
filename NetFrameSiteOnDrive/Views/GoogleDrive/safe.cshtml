@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-	<title></title>
+	<title>Site On Google Drive</title>
 	<meta charset="utf-8" />
 	<script src="http://code.angularjs.org/1.2.13/angular.min.js"></script>
 	<script src="~/Scripts/GoogleDrive/main.js" ></script>
@@ -23,20 +23,28 @@
 		<div ng-hide="waitPassword">
 			<!-- table -->
 			<table>
-				<tr>
-					<td>&nbsp;</td>
-					<td>User Name</td>
-					<td>Password</td>
-					<td>Description</td>
-				</tr>
-				<tr ng-repeat="x in tableJson.records">
-					<td>{{x.id}}</td>
-					<td>{{x.user}}</td>
-					<td>
-                        <input class="tablePassInput" type="password" value="{{x.pass}}">
-                    </td>
-					<td>{{x.desc}}</td>
-				</tr>
+                <thead>
+                    <tr>
+                        <th>&nbsp;</th>
+                        <th>User Name</th>
+                        <th>Password</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="x in viewCollection">
+                        <td>{{x.id}}</td>
+                        <td>{{x.user}}</td>
+                        <td>
+                            <input class="tablePassInput"
+                                   type="{{x.passInType}}"
+                                   value="{{x.pass}}"
+                                   ng-focus="x.passInType = 'text'"
+                                   ng-blur="x.passInType = 'password'">
+                        </td>
+                        <td>{{x.desc}}</td>
+                    </tr>
+                </tbody>
 			</table>
 		</div>
 
@@ -46,7 +54,12 @@
 			<p>{{tableContent}}</p>
 			<p />
 
-			<p>{{firstuser}}</p>
+			<p>{{tableJson.records[0].user}}</p>
+
+            <p />
+
+            <p>{{viewCollection[0].user}}</p>
+
 			<p />
 		</div>
 
