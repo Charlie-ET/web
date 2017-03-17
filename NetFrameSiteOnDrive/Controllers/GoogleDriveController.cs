@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Linq;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-
 using Google.Apis.Auth.OAuth2.Mvc;
 using Google.Apis.Drive.v3;
 using Google.Apis.Services;
 
+using NetFrameSiteOnDrive.Models;
 using static NetFrameSiteOnDrive.StringCipher;
 
 namespace NetFrameSiteOnDrive.Controllers
@@ -78,9 +79,26 @@ namespace NetFrameSiteOnDrive.Controllers
 
         // Post: GoogleDrive/Table
         [HttpPost]
-        public async Task<ActionResult> SavePassAsync(CancellationToken cancellationToken)
+        public ActionResult SavePass(FileContent file)
         {
-            throw new NotImplementedException(nameof(SavePassAsync));
+            if (file == null)
+            {
+                throw new ArgumentNullException(nameof(file));
+            }
+            Debug.WriteLine(file.Content);
+            return Content("good");
+        }
+
+        // Post: GoogleDrive/Table
+        [HttpPost]
+        public ActionResult EditPass(Credential pass)
+        {
+            if (pass == null)
+            {
+                throw new ArgumentNullException(nameof(pass));
+            }
+            Debug.WriteLine(pass.User);
+            return Content("good");
         }
 
         // GET: GoogleDrive/Table

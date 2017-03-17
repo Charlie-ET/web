@@ -3,13 +3,17 @@
 }
 
 section {
-  background: #fff;
-  box-shadow: 2px 2px 0 1px rgba(0, 0, 0, .1);
-  margin: 3em auto;
-  padding: 2em initial;
-  width: 800px;
+    background: #e5dcdc;
+    margin: 3em auto;
+    padding: 2em;
+    width: 800px;
 }
-input {
+
+#filePassInput {
   font-size: 1em;
   padding: 1em;
+}
+
+button {
+    margin: 8px 8px 8px 0;
 }
