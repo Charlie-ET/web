@@ -1,0 +1,23 @@
+﻿* {
+    font-family: Verdana, monospace;
+}
+
+section {
+    background: #e5dcdc;
+    margin: 3em auto;
+    padding: 2em;
+    width: 800px;
+}
+
+#filePassInput {
+  font-size: 1em;
+  padding: 1em;
+}
+
+button {
+    margin: 8px 8px 8px 0;
+}
+
+#passcodeerror {
+    color: red;
+}
