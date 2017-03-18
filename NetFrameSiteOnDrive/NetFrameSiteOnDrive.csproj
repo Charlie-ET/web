@@ -217,6 +217,7 @@
     <None Include="Views\Moon\table.cshtml" />
     <None Include="Views\Moon\Angular.cshtml" />
     <None Include="Views\GoogleDrive\safe.cshtml" />
+    <Content Include="secret.txt" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

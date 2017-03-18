@@ -7,12 +7,23 @@ using Google.Apis.Auth.OAuth2.Mvc;
 using Google.Apis.Drive.v3;
 using Google.Apis.Util.Store;
 
+using System.IO;
+
 namespace NetFrameSiteOnDrive
 {
     public class AppFlowMetadata : FlowMetadata
     {
         public const string ClinetIdString = "759434407900-a8qlujijs5l9evsv3ioblbv5d7q88jbv.apps.googleusercontent.com";
-        public const string ClientSecretString = "hPKhTOx2AYIubQEbHt_cYRRa";
+        private static readonly Lazy<string> s_lazySecret = new Lazy<string>(
+            () => {
+                string localFile = System.Web.Hosting.HostingEnvironment.MapPath("~/secret.txt");
+                using (var sr = new StreamReader(localFile))
+                {
+                    return sr.ReadLine().Trim();
+                }
+            });
+
+        private static string s_clientSecretString => s_lazySecret.Value;
 
         private static readonly IAuthorizationCodeFlow flow =
             new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
@@ -20,7 +31,7 @@ namespace NetFrameSiteOnDrive
                 ClientSecrets = new ClientSecrets
                 {
                     ClientId = ClinetIdString,
-                    ClientSecret = ClientSecretString
+                    ClientSecret = s_clientSecretString
                 },
                 Scopes = new[] { DriveService.Scope.Drive },
                 DataStore = new FileDataStore("Drive.Api.Auth.Store")
