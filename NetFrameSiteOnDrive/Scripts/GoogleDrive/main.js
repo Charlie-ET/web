@@ -29,6 +29,38 @@ function passRow() {
     }
 }
 
+var IV = IV = [
+    180, 106, 2, 96, //b4 6a 02 60
+    176, 188, 73, 34, //b0 bc 49 22
+    181, 235, 7, 133, //b5 eb 07 85
+    164, 183, 204, 158 //a4 b7 cc 9e;
+];
+
+var twF = twofish(IV);
+
+function encrypt(userKey, plainText) {
+    var keyArr = twF.stringToByteArray(userKey);
+    var plainArr = twF.stringToByteArray(plainText);
+    var encrypted = twF.encrypt(keyArr, plainArr);
+    var b64encoded = btoa(String.fromCharCode.apply(null, encrypted));
+    return b64encoded;
+}
+
+function decrypt(userKey, base64Encrypted) {
+    var keyArr = twF.stringToByteArray(userKey);
+    var encrypted = new Uint8Array(atob(base64Encrypted).split("").map(function (c) {
+        return c.charCodeAt(0);
+    }));
+
+    var decrypted = twF.decrypt(keyArr, encrypted);
+    var plainText = twF.byteArrayToString(decrypted);
+    var index = plainText.lastIndexOf("}");
+    var plainText = plainText.substring(0, index+1);
+
+    return plainText;
+}
+
+
 var myApp = angular.module('myApp', []);
 myApp.controller('mainCtrl', ['$scope', '$http', function ($scope, $http) {
 
@@ -41,6 +73,8 @@ myApp.controller('mainCtrl', ['$scope', '$http', function ($scope, $http) {
     $scope.log = '';
     $scope.isAdding = false;
     $scope.newpass = passRow();
+    $scope.fileUndecrypted = '';
+    $scope.showPasscodeError = false;
 
     //var test = {
     //    "id": "i1",
@@ -77,21 +111,68 @@ myApp.controller('mainCtrl', ['$scope', '$http', function ($scope, $http) {
     };
 
     $scope.okPassword = function () {
-        $scope.waitPassword = false;
         $scope.viewCollection = [
             //passRow("i1", "name1", "p1", "d1")
         ];
+
+        //var content = 'mytest';
+
+        //var encrypted = encrypt($scope.passcode, content);
+        //$scope.log += "Encrypted \n";
+        //$scope.log += encrypted;
+
+        //var config = {
+        //    headers: {
+        //        'Content-Type': 'application/json;charset=utf-8;'
+        //    }
+        //}
+        ////var data = { "content": content };
+        //var data = { "content": encrypted };
+        //$http.post(
+        //    'http://localhost:49906/GoogleDrive/SavePass',
+        //    data,
+        //    config).then(
+        //    function (response) {
+        //        // success callback
+        //        $scope.log += "\nSucceeded";
+        //    },
+        //    function (response) {
+        //        // failure callback
+        //        $scope.log += "\nFailed";
+        //    }
+        //    );
+
+        //return;
+
+        $scope.waitPassword = false;
+
         // $scope.tableContent = "Now you see some content"
         $http.get("http://localhost:49906/GoogleDrive/table").then(
             function (successResponse) {
-                $scope.tableContent = successResponse.data;
-                $scope.tableJson = angular.fromJson($scope.tableContent);
-                angular.forEach($scope.tableJson.records, function (value, key) {
-                    $scope.viewCollection.push(passRow(value));
-                });
+                $scope.fileUndecrypted = successResponse.data;
+
+                if ($scope.fileUndecrypted === 'CREATE_NEW') {
+                    $scope.tableJson = { "records": [] };
+                    return;
+                }
+
+
+                // TODO: handle error
+                try {
+                    $scope.tableContent = decrypt($scope.passcode, successResponse.data);
+                    $scope.tableJson = angular.fromJson($scope.tableContent);
+                    angular.forEach($scope.tableJson.records, function (value, key) {
+                        $scope.viewCollection.push(passRow(value));
+                    });
+                } catch (e) {
+                    $scope.showPasscodeError = true;
+                    $scope.passcodeError = e.message;
+                    $scope.waitPassword = true;
+                    return;
+                }
             },
             function (errorResponse) {
-                // handle errors here
+                throw new 'Failed to open mima file';
             });
     };
 
@@ -126,14 +207,14 @@ myApp.controller('mainCtrl', ['$scope', '$http', function ($scope, $http) {
         $scope.isAdding = true;
     };
 
-    $scope.addPass = function () {
+    $scope.newPassItem = function () {
         $scope.viewCollection.push($scope.newpass);
         $scope.newpass = passRow();
         $scope.isAdding = false;
         $scope.changed = true;
     };
 
-    $scope.submit = function () {
+    $scope.saveToDrive = function () {
         $scope.log = 'submitting \n';
         $scope.tableJson.records = [];
         //$scope.log += $scope.viewCollection[0].passObj.user;
@@ -145,12 +226,20 @@ myApp.controller('mainCtrl', ['$scope', '$http', function ($scope, $http) {
         var content = angular.toJson($scope.tableJson);
         $scope.log += content;
 
+        // debug
+        // content = 'mytest';
+
+        var encrypted = encrypt($scope.passcode, content);
+        $scope.log += "Encrypted \n";
+        $scope.log += encrypted;
+
         var config = {
             headers: {
                 'Content-Type': 'application/json;charset=utf-8;'
             }
         }
-        var data = { "content": content };
+        //var data = { "content": content };
+        var data = { "content": encrypted };
         $http.post(
             'http://localhost:49906/GoogleDrive/SavePass',
             data,

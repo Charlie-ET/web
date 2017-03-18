@@ -208,8 +208,10 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Views\Moon\Index.cshtml" />
+    <Content Include="Scripts\GoogleDrive\convert.js" />
     <Content Include="Scripts\GoogleDrive\main.js" />
     <Content Include="Scripts\GoogleDrive\twofish.js" />
+    <Content Include="Scripts\GoogleDrive\twofish2.js" />
     <Content Include="Scripts\Moon\angularJS_password.js" />
     <Content Include="Scripts\Moon\script.js" />
     <None Include="Views\Moon\table.cshtml" />

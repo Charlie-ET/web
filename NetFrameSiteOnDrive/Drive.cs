@@ -20,6 +20,9 @@ namespace NetFrameSiteOnDrive
         private const int ListFileBatchFileCount = 100;
         private DriveService _service;
 
+        public DriveData.File MimaFile { get; set; }
+        private DriveData.File _mimaFolder;
+
         public Drive(DriveService service)
         {
             if (service == null)
@@ -27,6 +30,62 @@ namespace NetFrameSiteOnDrive
                 throw new ArgumentNullException(nameof(service));
             }
             _service = service;
+        }
+
+        public void MakeMimaCopy()
+        {
+            if (MimaFile == null)
+            {
+                return;
+            }
+            DriveData.File copiedFile = new DriveData.File();
+            var copyName = DateTime.Now.ToString(".yyyy-dd-M--HH-mm-ss-fff");
+            copiedFile.Name = MimaFile.Name + copyName;
+            _service.Files.Copy(copiedFile, MimaFile.Id).Execute();
+        }
+
+
+
+        public void OverWriteMima(string content)
+        {
+            var copyName = DateTime.Now.ToString(".yyyy-dd-M--HH-mm-ss-fff");
+            var newFile = new DriveData.File()
+            {
+                Name = "cherry.data" + copyName,
+                Parents = new List<string>(new string[] { _mimaFolder.Id})
+            };
+
+            // File's new metadata.
+            newFile.Description = DateTime.UtcNow.ToLongTimeString();
+            newFile.MimeType = "text/plain";
+
+            using (Stream s = GenerateStreamFromString(content))
+            {
+                // Send the request to the API.
+                var request = 
+                    _service.Files.Create(newFile, s, "text/plain");
+                var t = request.Upload();
+                var updatedFile = request.ResponseBody;
+            }
+        }
+
+        public static Stream GenerateStreamFromString(string s)
+        {
+            MemoryStream stream = new MemoryStream();
+            StreamWriter writer = new StreamWriter(stream);
+            writer.Write(s);
+            writer.Flush();
+            stream.Position = 0;
+            return stream;
+        }
+
+
+        public async Task<DriveData.File> GetLatest()
+        {
+            var files = await EnumerateFiles(rootFolder: "mima");
+            var query = files?.Where(x => x.Name.ToLower().StartsWith("cherry.data"))
+                .OrderBy(x => x.ModifiedTime).LastOrDefault();
+            return query;
         }
 
         public async Task<IEnumerable<DriveData.File>> EnumerateFiles(uint maxFileCounts = MaxListFileCount, string rootFolder = null)
@@ -44,6 +103,8 @@ namespace NetFrameSiteOnDrive
             {
                 return null;
             }
+
+            _mimaFolder = folder;
 
             var files = await InternalEnumerateFiles($"'{folder.Id}' in parents");
             return files;

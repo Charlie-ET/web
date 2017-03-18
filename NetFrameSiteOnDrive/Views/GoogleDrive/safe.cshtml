@@ -4,6 +4,7 @@
 	<title>Site On Google Drive</title>
 	<meta charset="utf-8" />
 	<script src="http://code.angularjs.org/1.2.13/angular.min.js"></script>
+    <script src="~/Scripts/GoogleDrive/twofish2.js"></script>
 	<script src="~/Scripts/GoogleDrive/main.js" ></script>
 	<link rel="stylesheet" href="~/Content/GoogleDrive/main.css" />
 	<link rel="stylesheet" href="~/Content/GoogleDrive/table.css" />
@@ -20,45 +21,48 @@
                 <input type="checkbox" id="checkbox" ng-model="passwordCheckbox" ng-click="hideShowPassword()" />
                 <label for="checkbox" ng-if="passwordCheckbox">Hide password</label>
                 <label for="checkbox" ng-if="!passwordCheckbox">Show password</label>
+                <p id="passcodeerror" ng-show="showPasscodeError">{{passcodeError}}</p>
                 <p />
                 <button ng-click="okPassword()">OK</button>
             </div>
 
             <div ng-hide="waitPassword">
-                <form ng-submit="submit()">
-                    <!-- table -->
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>&nbsp;</th>
-                                <th>User Name</th>
-                                <th>Password</th>
-                                <th>Description</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="x in viewCollection">
-                                <td>{{x.passObj.id}}</td>
-                                <td>{{x.passObj.user}}</td>
-                                <td>
-                                    <input class="tablePassInput"
-                                           type="{{x.passInputType}}"
-                                           ng-model="x.passObj.pass"
-                                           ng-change="passChanged($index)"
-                                           ng-focus="x.passInputType = 'text'"
-                                           ng-blur="x.passInputType = 'password'">
-                                </td>
-                                <td>{{x.passObj.desc}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <button id="addItem" ng-click="addClicked()">Add</button>
-                    <input type="submit" id="submit" ng-disabled="!changed" value="Save to Google Drive" />
-                </form>
+                <!-- table -->
+                <table>
+                    <thead>
+                        <tr>
+                            <th>&nbsp;</th>
+                            <th>User Name</th>
+                            <th>Password</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="x in viewCollection">
+                            <td>{{x.passObj.id}}</td>
+                            <td>{{x.passObj.user}}</td>
+                            <td>
+                                <input class="tablePassInput"
+                                        type="{{x.passInputType}}"
+                                        ng-model="x.passObj.pass"
+                                        ng-change="passChanged($index)"
+                                        ng-focus="x.passInputType = 'text'"
+                                        ng-blur="x.passInputType = 'password'">
+                            </td>
+                            <td>{{x.passObj.desc}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button id="addItem" ng-click="addClicked()">Add</button>
+                <button id="submit" 
+                        ng-click="saveToDrive()"
+                        ng-disabled="!changed">
+                    Save to Google Drive
+                </button>
             </div>
         </div>
 
-        <form ng-show="isAdding" ng-submit="addPass()">
+        <form ng-show="isAdding">
             <label for="id">Id</label>
             <input type="text" name="id" ng-model="newpass.passObj.id"><br>
             <label for="user">User Name</label>
@@ -67,10 +71,10 @@
             <input type="password" name="pass" ng-model="newpass.passObj.pass"><br>
             <label for="desc">Description</label>
             <input type="text" name="desc" ng-model="newpass.passObj.desc"><br>
-            <input type="submit" id="submit" value="OK" />
+            <button id="newPassItem"  ng-click="newPassItem()" >OK</button>
         </form>
 
-		<div class="log" ng-show="true">
+		<div class="log" ng-show="false">
             <p/>
             <p>Debug log</p>
             <p />
@@ -80,8 +84,11 @@
 		<div class="debug" ng-show="false">
 			<p>{{passcode}}</p>
 
-			<p>{{tableContent}}</p>
+			<p>{{fileUndecrypted}}</p>
 			<p />
+
+            <p>{{tableContent}}</p>
+            <p />
 
 			<p>{{tableJson.records[0].user}}</p>
 

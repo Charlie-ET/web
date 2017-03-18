@@ -57,11 +57,6 @@ namespace NetFrameSiteOnDrive.Controllers
                 throw new Exception("s_drive is null");
             }
 
-            var files = await s_drive.EnumerateFiles(rootFolder: "mima");
-            if (files?.Count() == 0)
-            {
-                return Content("No file is found.");
-            }
             //return Content(string.Join("<b/>", files.Select(x => x.Name)));
 
             // return Content(await s_drive.Download(files.First()));
@@ -86,6 +81,10 @@ namespace NetFrameSiteOnDrive.Controllers
                 throw new ArgumentNullException(nameof(file));
             }
             Debug.WriteLine(file.Content);
+
+            s_drive.MakeMimaCopy();
+            s_drive.OverWriteMima(file.Content);
+
             return Content("good");
         }
 
@@ -101,23 +100,35 @@ namespace NetFrameSiteOnDrive.Controllers
             return Content("good");
         }
 
+        private static bool s_switch = true;
+
         // GET: GoogleDrive/Table
         public async Task<ActionResult> TableAsync(CancellationToken cancellationToken)
         {
             if (s_drive == null)
             {
-                throw new Exception("s_drive is null");
+                throw new Exception("s_drive?.MimaFile is null");
             }
 
-            var files = await s_drive.EnumerateFiles(rootFolder: "mima");
-            if (files?.Count() == 0)
+            s_drive.MimaFile = await s_drive.GetLatest();
+            if (s_drive.MimaFile == null)
             {
-                return Content("No file is found.");
+                return Content("CREATE_NEW");
             }
 
-            var content = await s_drive.Download(files.First());
-            string pass = "pass111";
-            return Content(Decrypt(content, pass));
+            var content = await s_drive.Download(s_drive.MimaFile);
+            //s_switch = !s_switch;
+            s_switch = false;
+            if (s_switch)
+            {
+                string pass = "pass111";
+                return Content(Decrypt(content, pass));
+            }
+            else
+            {
+                return Content(content);
+            }
+
         }
 
         // GET: GoogleDrive/TableTest
