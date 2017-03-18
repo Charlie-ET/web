@@ -82,7 +82,7 @@ namespace NetFrameSiteOnDrive.Controllers
             }
             Debug.WriteLine(file.Content);
 
-            s_drive.MakeMimaCopy();
+            // s_drive.MakeMimaCopy();
             s_drive.OverWriteMima(file.Content);
 
             return Content("good");

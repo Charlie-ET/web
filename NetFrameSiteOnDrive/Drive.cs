@@ -32,17 +32,17 @@ namespace NetFrameSiteOnDrive
             _service = service;
         }
 
-        public void MakeMimaCopy()
-        {
-            if (MimaFile == null)
-            {
-                return;
-            }
-            DriveData.File copiedFile = new DriveData.File();
-            var copyName = DateTime.Now.ToString(".yyyy-dd-M--HH-mm-ss-fff");
-            copiedFile.Name = MimaFile.Name + copyName;
-            _service.Files.Copy(copiedFile, MimaFile.Id).Execute();
-        }
+        //public void MakeMimaCopy()
+        //{
+        //    if (MimaFile == null)
+        //    {
+        //        return;
+        //    }
+        //    DriveData.File copiedFile = new DriveData.File();
+        //    var copyName = DateTime.Now.ToString(".yyyy-dd-M--HH-mm-ss-fff");
+        //    copiedFile.Name = MimaFile.Name + copyName;
+        //    _service.Files.Copy(copiedFile, MimaFile.Id).Execute();
+        //}
 
 
 
@@ -84,7 +84,7 @@ namespace NetFrameSiteOnDrive
         {
             var files = await EnumerateFiles(rootFolder: "mima");
             var query = files?.Where(x => x.Name.ToLower().StartsWith("cherry.data"))
-                .OrderBy(x => x.ModifiedTime).LastOrDefault();
+                .OrderBy(x => x.Name).LastOrDefault();
             return query;
         }
 
