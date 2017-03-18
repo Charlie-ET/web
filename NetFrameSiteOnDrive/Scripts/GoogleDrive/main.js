@@ -89,7 +89,7 @@ myApp.controller('mainCtrl', ['$scope', '$http', function ($scope, $http) {
     //    }
     //};
     //$http.post(
-    //    'http://localhost:49906/GoogleDrive/EditPass',
+    //    '/GoogleDrive/EditPass',
     //    test,
     //    config).then(
     //    function (response) {
@@ -147,7 +147,7 @@ myApp.controller('mainCtrl', ['$scope', '$http', function ($scope, $http) {
         $scope.waitPassword = false;
 
         // $scope.tableContent = "Now you see some content"
-        $http.get("http://localhost:49906/GoogleDrive/table").then(
+        $http.get("/GoogleDrive/table").then(
             function (successResponse) {
                 $scope.fileUndecrypted = successResponse.data;
 
@@ -172,6 +172,9 @@ myApp.controller('mainCtrl', ['$scope', '$http', function ($scope, $http) {
                 }
             },
             function (errorResponse) {
+                    $scope.showPasscodeError = true;
+                    $scope.passcodeError = 'failed to open mima file';
+                    $scope.waitPassword = true;
                 throw new 'Failed to open mima file';
             });
     };
@@ -241,7 +244,7 @@ myApp.controller('mainCtrl', ['$scope', '$http', function ($scope, $http) {
         //var data = { "content": content };
         var data = { "content": encrypted };
         $http.post(
-            'http://localhost:49906/GoogleDrive/SavePass',
+            '/GoogleDrive/SavePass',
             data,
             config).then(
                 function (response) {

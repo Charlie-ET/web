@@ -16,6 +16,9 @@ namespace NetFrameSiteOnDrive
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            // Configure log4net to use Stackdriver logging from the XML configuration file.
+            log4net.Config.XmlConfigurator.Configure();
         }
     }
 }

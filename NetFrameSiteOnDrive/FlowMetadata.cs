@@ -8,18 +8,40 @@ using Google.Apis.Drive.v3;
 using Google.Apis.Util.Store;
 
 using System.IO;
+using log4net;
+
 
 namespace NetFrameSiteOnDrive
 {
     public class AppFlowMetadata : FlowMetadata
     {
+
+        private static ILog s_logger => s_lazyLogger.Value;
+        private static readonly Lazy<ILog> s_lazyLogger = new Lazy<ILog>(
+            () => {
+                // Retrieve a logger for this context.
+                ILog log = LogManager.GetLogger(typeof(AppFlowMetadata));
+
+                // Log some information to Google Stackdriver Logging.
+                log.Info("AppFlowMetadata logger created");
+                return log;
+            });
+
         public const string ClinetIdString = "759434407900-a8qlujijs5l9evsv3ioblbv5d7q88jbv.apps.googleusercontent.com";
         private static readonly Lazy<string> s_lazySecret = new Lazy<string>(
             () => {
                 string localFile = System.Web.Hosting.HostingEnvironment.MapPath("~/secret.txt");
+                s_logger.Debug($"open {localFile}");
                 using (var sr = new StreamReader(localFile))
                 {
-                    return sr.ReadLine().Trim();
+                    var sec =  sr.ReadLine().Trim();
+                    if (string.IsNullOrEmpty(sec))
+                    {
+                        s_logger.Error($"empty {localFile}");
+                        throw new Exception("Failed to get secret");
+                    }
+
+                    return sec;
                 }
             });
 
@@ -56,7 +78,11 @@ namespace NetFrameSiteOnDrive
 
         public override IAuthorizationCodeFlow Flow
         {
-            get { return flow; }
+            get {
+                var gflow = flow as GoogleAuthorizationCodeFlow;
+                s_logger.Debug($"secret is {gflow.ClientSecrets.ClientSecret.Substring(2, 5)}");
+                return flow;
+            }
         }
     }
 }
