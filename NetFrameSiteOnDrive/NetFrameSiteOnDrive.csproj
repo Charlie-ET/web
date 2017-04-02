@@ -78,8 +78,8 @@
       <HintPath>packages\Google.Apis.Auth.1.22.0\lib\net45\Google.Apis.Auth.PlatformServices.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Core">
-      <HintPath>packages\Google.Apis.Core.1.22.0\lib\net45\Google.Apis.Core.dll</HintPath>
+    <Reference Include="Google.Apis.Core, Version=1.24.1.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>packages\Google.Apis.Core.1.24.1\lib\net45\Google.Apis.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Google.Apis.Drive.v3">
@@ -226,6 +226,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="MemoryStore.cs" />
     <Compile Include="Models\FileContent.cs" />
     <Compile Include="Models\Pass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -255,7 +256,9 @@
     <Content Include="Views\Moon\Angular.cshtml" />
     <Content Include="Views\GoogleDrive\safe.cshtml" />
     <Content Include="secret.txt" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -271,7 +274,9 @@
     <Folder Include="Views\AuthCallback\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="packages.config" />
+    <Content Include="packages.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

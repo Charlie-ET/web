@@ -58,7 +58,7 @@ namespace NetFrameSiteOnDrive
                     ClientSecret = s_lazySecret.Value
                 },
                 Scopes = new[] { DriveService.Scope.Drive },
-                DataStore = new FileDataStore(s_authDataStoreFile.Value)
+                DataStore = new GoogleMemoryAuthStore()
             });
 
         public override string GetUserId(Controller controller)
