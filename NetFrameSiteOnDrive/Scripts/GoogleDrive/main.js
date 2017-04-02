@@ -1,4 +1,5 @@
-﻿class Pass {
+﻿
+class Pass {
     constructor(id, user, pass, desc) {
         this.id = id;
         this.user = user;
@@ -29,16 +30,22 @@ function passRow() {
     }
 }
 
-var IV = IV = [
-    180, 106, 2, 96, //b4 6a 02 60
-    176, 188, 73, 34, //b0 bc 49 22
-    181, 235, 7, 133, //b5 eb 07 85
-    164, 183, 204, 158 //a4 b7 cc 9e;
-];
+var IV = [0];	
+for (i = 0; i < 15; i++) {
+    IV.push(0);
+}
 
 var twF = twofish(IV);
 
+function padKeys(userKey) {
+    while (userKey.length < 32) {
+        userKey += "0";
+    }
+    return userKey;
+}
+
 function encrypt(userKey, plainText) {
+    var userKey = padKeys(userKey);
     var keyArr = twF.stringToByteArray(userKey);
     var plainArr = twF.stringToByteArray(plainText);
     var encrypted = twF.encrypt(keyArr, plainArr);
@@ -47,6 +54,7 @@ function encrypt(userKey, plainText) {
 }
 
 function decrypt(userKey, base64Encrypted) {
+    var userKey = padKeys(userKey);
     var keyArr = twF.stringToByteArray(userKey);
     var encrypted = new Uint8Array(atob(base64Encrypted).split("").map(function (c) {
         return c.charCodeAt(0);
@@ -89,7 +97,7 @@ myApp.controller('mainCtrl', ['$scope', '$http', function ($scope, $http) {
     //    }
     //};
     //$http.post(
-    //    'http://localhost:49906/GoogleDrive/EditPass',
+    //    '/GoogleDrive/EditPass',
     //    test,
     //    config).then(
     //    function (response) {
@@ -147,7 +155,7 @@ myApp.controller('mainCtrl', ['$scope', '$http', function ($scope, $http) {
         $scope.waitPassword = false;
 
         // $scope.tableContent = "Now you see some content"
-        $http.get("http://localhost:49906/GoogleDrive/table").then(
+        $http.get("/GoogleDrive/table").then(
             function (successResponse) {
                 $scope.fileUndecrypted = successResponse.data;
 
@@ -172,6 +180,9 @@ myApp.controller('mainCtrl', ['$scope', '$http', function ($scope, $http) {
                 }
             },
             function (errorResponse) {
+                $scope.showPasscodeError = true;
+                $scope.passcodeError = 'failed to open mima file';
+                $scope.waitPassword = true;
                 throw new 'Failed to open mima file';
             });
     };
@@ -241,7 +252,7 @@ myApp.controller('mainCtrl', ['$scope', '$http', function ($scope, $http) {
         //var data = { "content": content };
         var data = { "content": encrypted };
         $http.post(
-            'http://localhost:49906/GoogleDrive/SavePass',
+            '/GoogleDrive/SavePass',
             data,
             config).then(
                 function (response) {

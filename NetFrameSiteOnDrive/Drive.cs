@@ -12,10 +12,23 @@ using Google.Apis.Services;
 using Google.Apis.Download;
 using System.IO;
 
+using log4net;
+
 namespace NetFrameSiteOnDrive
 {
     public class Drive
     {
+        private static ILog s_logger => s_lazyLogger.Value;
+        private static readonly Lazy<ILog> s_lazyLogger = new Lazy<ILog>(
+            () => {
+                // Retrieve a logger for this context.
+                ILog log = LogManager.GetLogger(typeof(Drive));
+
+                // Log some information to Google Stackdriver Logging.
+                log.Info("Drive logger created");
+                return log;
+            });
+
         private const uint MaxListFileCount = 100;
         private const int ListFileBatchFileCount = 100;
         private DriveService _service;
@@ -24,11 +37,13 @@ namespace NetFrameSiteOnDrive
         private DriveData.File _mimaFolder;
 
         public Drive(DriveService service)
-        {
+        {         
             if (service == null)
             {
+                s_logger.Error("service input is null", new ArgumentNullException(nameof(service)));
                 throw new ArgumentNullException(nameof(service));
             }
+            s_logger.Debug("construct Drive");
             _service = service;
         }
 
@@ -48,7 +63,7 @@ namespace NetFrameSiteOnDrive
 
         public void OverWriteMima(string content)
         {
-            var copyName = DateTime.Now.ToString(".yyyy-dd-M--HH-mm-ss-fff");
+            var copyName = DateTime.Now.ToString(".yyyy-MM-dd-HH-mm-ss-fff");
             var newFile = new DriveData.File()
             {
                 Name = "cherry.data" + copyName,
@@ -67,6 +82,8 @@ namespace NetFrameSiteOnDrive
                 var t = request.Upload();
                 var updatedFile = request.ResponseBody;
             }
+
+            s_logger.Debug($"Wrote to file {copyName}");
         }
 
         public static Stream GenerateStreamFromString(string s)
@@ -83,8 +100,10 @@ namespace NetFrameSiteOnDrive
         public async Task<DriveData.File> GetLatest()
         {
             var files = await EnumerateFiles(rootFolder: "mima");
+            s_logger.Debug($"enumerate mima returns {files?.Count()}");
             var query = files?.Where(x => x.Name.ToLower().StartsWith("cherry.data"))
                 .OrderBy(x => x.Name).LastOrDefault();
+            s_logger.Debug($"cherry pick result {query?.Name}");
             return query;
         }
 
@@ -95,12 +114,12 @@ namespace NetFrameSiteOnDrive
                 throw new ArgumentNullException(nameof(maxFileCounts));
             }
 
-
             // TODO: figure "and title = {rootFolder}"
             var folders = await InternalEnumerateFiles($"mimeType = 'application/vnd.google-apps.folder'");
             var folder = folders.Where(x => x.Name == rootFolder).FirstOrDefault();
             if (folder == null)
             {
+                s_logger.Error($"Do not find mima folder");
                 return null;
             }
 
@@ -112,6 +131,8 @@ namespace NetFrameSiteOnDrive
 
         public async Task<string> Download(DriveData.File file)
         {
+            s_logger.Debug($"Download {file.Name}");
+
             // TODO: verify File type.
             using (var stream = await DownloadFile(file.Id))
             {
@@ -161,11 +182,13 @@ namespace NetFrameSiteOnDrive
                             }
                         case DownloadStatus.Completed:
                             {
+                                s_logger.Info($"Download complete. file_id {fileId}");
                                 Debug.WriteLine("Download complete.");
                                 break;
                             }
                         case DownloadStatus.Failed:
                             {
+                                s_logger.Error($"Download failed. file_id {fileId}");
                                 Debug.WriteLine("Download failed.");
                                 break;
                             }

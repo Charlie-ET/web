@@ -11,6 +11,7 @@ namespace NetFrameSiteOnDrive.Controllers
         // GET: Moon
         public ActionResult Index()
         {
+             
             return View();
         }
 

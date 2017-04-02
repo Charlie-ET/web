@@ -1,0 +1,21 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Log4Net Google Stackdriver Logging Appender.</title>
+    <meta charset="utf-8" />
+    <script src="http://code.angularjs.org/1.2.13/angular.min.js"></script>
+    <script src="/Scripts/main.js"></script>
+</head>
+<body>
+    <section ng-app="myApp" ng-controller="mainCtrl">
+        <h1>{{peanut}}</h1>
+        <p></p>
+        <form ng-submit="doLogging()">
+            <label for="LogCount">Input log count.</label>
+            <input type="number" id="LogCount" ng-model="logCount">
+            <input type="submit" />
+        </form>
+        <p>{{submitResult}}</p>
+    </section>
+</body>
+</html>

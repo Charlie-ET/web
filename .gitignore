@@ -4,6 +4,8 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 secret.txt
+clientid.txt
+authStoreLocation.txt
 
 # User-specific files
 *.suo
