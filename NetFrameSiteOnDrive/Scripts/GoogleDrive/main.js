@@ -1,8 +1,4 @@
-﻿My Drive
-DETAILS
-ACTIVITY
-Select a file or folder to view its details.
-
+﻿
 class Pass {
     constructor(id, user, pass, desc) {
         this.id = id;

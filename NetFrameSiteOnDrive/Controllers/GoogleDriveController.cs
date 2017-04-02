@@ -7,9 +7,9 @@ using System.Web.Mvc;
 using Google.Apis.Auth.OAuth2.Mvc;
 using Google.Apis.Drive.v3;
 using Google.Apis.Services;
+using System.Collections.Generic;
 
 using NetFrameSiteOnDrive.Models;
-using static NetFrameSiteOnDrive.StringCipher;
 
 using log4net;
 
@@ -26,8 +26,8 @@ namespace NetFrameSiteOnDrive.Controllers
         //{
         //    return Content("something");
         //}
-
-        private static Drive s_drive = null;
+        private static Dictionary<string, Drive> s_credentialCache = new Dictionary<string, Drive>();
+        private const string TokenSessionName = "token_id";
 
         private static readonly Lazy<ILog> s_lazyLogger = new Lazy<ILog>( 
             () =>{
@@ -40,14 +40,13 @@ namespace NetFrameSiteOnDrive.Controllers
             });
         private static ILog s_logger => s_lazyLogger.Value;
 
-        [HttpGet]
-        public async Task<ActionResult> IndexAsync(CancellationToken cancellationToken)
+        private async Task<ActionResult> SessionManager(CancellationToken cancellationToken, Func<ActionResult> actionResultReturn)
         {
-            s_logger.Debug("IndexAsync start");
-
-            try
+            string key =  HttpContext.Session[TokenSessionName] as string;
+            if (key == null)
             {
-                if (s_drive == null)
+                key = Guid.NewGuid().ToString();
+                try
                 {
                     var result = await new AuthorizationCodeMvcApp(this, new AppFlowMetadata()).
                         AuthorizeAsync(cancellationToken);
@@ -61,7 +60,8 @@ namespace NetFrameSiteOnDrive.Controllers
                         });
 
                         s_logger.Debug($"Credential user id {result.Credential.UserId}");
-                        s_drive = new Drive(service);
+                        s_credentialCache[key] = new Drive(service);
+                        HttpContext.Session[TokenSessionName] = key;
                     }
                     else
                     {
@@ -69,24 +69,79 @@ namespace NetFrameSiteOnDrive.Controllers
                         return new RedirectResult(result.RedirectUri);
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                s_logger.Error("auth failure", ex);
-                throw;
+                catch (Exception ex)
+                {
+                    s_logger.Error("auth failure", ex);
+                    throw;
+                }
             }
 
-            if (s_drive == null)
+            return actionResultReturn();
+        }
+
+        private Drive CheckAuthToken()
+        {
+            var key = Session[TokenSessionName] as string;
+            s_logger.Debug($"session key is {key}");
+            if (key == null)
             {
-                s_logger.Error("s_drive is null", new Exception("s_drive is not created"));
-                throw new Exception("s_drive is null");
+                s_logger.Error($"Not authenticated.");
+                throw new Exception("Not authenticated");
             }
+            return s_credentialCache[key];
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> IndexAsync(CancellationToken cancellationToken)
+        {
+            s_logger.Debug("IndexAsync start");
+
+            //try
+            //{
+            //    if (Session[TokenSessionName])
+            //    {
+            //        var result = await new AuthorizationCodeMvcApp(this, new AppFlowMetadata()).
+            //            AuthorizeAsync(cancellationToken);
+
+            //        if (result.Credential != null)
+            //        {
+            //            var service = new DriveService(new BaseClientService.Initializer
+            //            {
+            //                HttpClientInitializer = result.Credential,
+            //                ApplicationName = "Site on Google Drive"
+            //            });
+
+            //            s_logger.Debug($"Credential user id {result.Credential.UserId}");
+            //            s_drive = new Drive(service);
+            //        }
+            //        else
+            //        {
+            //            s_logger.Debug($"Redirect {result.RedirectUri}");
+            //            return new RedirectResult(result.RedirectUri);
+            //        }
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    s_logger.Error("auth failure", ex);
+            //    throw;
+            //}
+
+            //if (s_drive == null)
+            //{
+            //    s_logger.Error("s_drive is null", new Exception("s_drive is not created"));
+            //    throw new Exception("s_drive is null");
+            //}
 
             //return Content(string.Join("<b/>", files.Select(x => x.Name)));
 
+
             // return Content(await s_drive.Download(files.First()));
-            s_logger.Debug($"Return safe view");
-            return View(nameof(Safe));
+            return await SessionManager(cancellationToken, () =>
+            {
+                s_logger.Debug($"Return safe view");
+                return View(nameof(Safe));
+            });
         }
 
         // GET: GoogleDrive/safe
@@ -94,6 +149,9 @@ namespace NetFrameSiteOnDrive.Controllers
         public ActionResult Safe()
         {
             s_logger.Debug($"Entering safe");
+
+            CheckAuthToken();
+
             return View();
         }
 
@@ -110,8 +168,10 @@ namespace NetFrameSiteOnDrive.Controllers
             }
             Debug.WriteLine(file.Content);
 
-            // s_drive.MakeMimaCopy();
-            s_drive.OverWriteMima(file.Content);
+            var drive = CheckAuthToken();
+
+            drive.OverWriteMima(file.Content);
+            s_logger.Debug($"File Saved");
 
             return Content("good");
         }
@@ -129,41 +189,27 @@ namespace NetFrameSiteOnDrive.Controllers
             return Content("good");
         }
 
-        private static bool s_switch = true;
-
         // GET: GoogleDrive/Table
         public async Task<ActionResult> TableAsync(CancellationToken cancellationToken)
         {
             s_logger.Debug($"Entering TableAsync");
-
-            if (s_drive == null)
+            var drive = CheckAuthToken();
+            if (drive == null)
             {
-                s_logger.Error($" TableAsync, s_drive is null");
                 throw new Exception("s_drive?.MimaFile is null");
             }
 
-            s_drive.MimaFile = await s_drive.GetLatest();
-            if (s_drive.MimaFile == null)
+            drive.MimaFile = await drive.GetLatest();
+            if (drive.MimaFile == null)
             {
-                s_logger.Error($" TableAsync, s_drive.MimaFile is null");
+                s_logger.Error($" TableAsync, drive.MimaFile is null");
                 return Content("CREATE_NEW");
             }
 
             s_logger.Debug($"download content");
-            var content = await s_drive.Download(s_drive.MimaFile);
-            //s_switch = !s_switch;
-            s_switch = false;
-            if (s_switch)
-            {
-                string pass = "pass111";
-                return Content(Decrypt(content, pass));
-            }
-            else
-            {
-                s_logger.Debug($" TableAsync, return content ... {content.Substring(0, 5)}");
-                return Content(content);
-            }
-
+            var content = await drive.Download(drive.MimaFile);
+            s_logger.Debug($" TableAsync, return content ... {content.Substring(0, 5)}");
+            return Content(content);
         }
 
         // GET: GoogleDrive/TableTest

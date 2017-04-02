@@ -27,36 +27,38 @@ namespace NetFrameSiteOnDrive
                 return log;
             });
 
-        public const string ClinetIdString = "759434407900-a8qlujijs5l9evsv3ioblbv5d7q88jbv.apps.googleusercontent.com";
-        private static readonly Lazy<string> s_lazySecret = new Lazy<string>(
-            () => {
-                string localFile = System.Web.Hosting.HostingEnvironment.MapPath("~/secret.txt");
-                s_logger.Debug($"open {localFile}");
-                using (var sr = new StreamReader(localFile))
+        public static readonly Lazy<string> s_clientId = new Lazy<string>(() => OpenFileGetLine("~/clientid.txt"));
+        private static readonly Lazy<string> s_lazySecret = new Lazy<string>(() => OpenFileGetLine("~/secret.txt"));
+
+        private static string OpenFileGetLine(string relativePath)
+        {
+            string localFile = System.Web.Hosting.HostingEnvironment.MapPath(relativePath);
+            s_logger.Debug($"open {localFile}");
+            using (var sr = new StreamReader(localFile))
+            {
+                var sec = sr.ReadLine().Trim();
+                if (string.IsNullOrEmpty(sec))
                 {
-                    var sec =  sr.ReadLine().Trim();
-                    if (string.IsNullOrEmpty(sec))
-                    {
-                        s_logger.Error($"empty {localFile}");
-                        throw new Exception("Failed to get secret");
-                    }
-
-                    return sec;
+                    s_logger.Error($"empty {localFile}");
+                    throw new Exception("Failed to get secret");
                 }
-            });
 
-        private static string s_clientSecretString => s_lazySecret.Value;
+                return sec;
+            }
+        }
+
+        public static Lazy<string> s_authDataStoreFile = new Lazy<string>(() => OpenFileGetLine("~/authStoreLocation.txt"));
 
         private static readonly IAuthorizationCodeFlow flow =
             new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
             {
                 ClientSecrets = new ClientSecrets
                 {
-                    ClientId = ClinetIdString,
-                    ClientSecret = s_clientSecretString
+                    ClientId = s_clientId.Value,
+                    ClientSecret = s_lazySecret.Value
                 },
                 Scopes = new[] { DriveService.Scope.Drive },
-                DataStore = new FileDataStore("Drive.Api.Auth.Store")
+                DataStore = new FileDataStore(s_authDataStoreFile.Value)
             });
 
         public override string GetUserId(Controller controller)

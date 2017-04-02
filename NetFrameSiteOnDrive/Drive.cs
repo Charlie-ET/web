@@ -63,7 +63,7 @@ namespace NetFrameSiteOnDrive
 
         public void OverWriteMima(string content)
         {
-            var copyName = DateTime.Now.ToString(".yyyy-dd-M--HH-mm-ss-fff");
+            var copyName = DateTime.Now.ToString(".yyyy-MM-dd-HH-mm-ss-fff");
             var newFile = new DriveData.File()
             {
                 Name = "cherry.data" + copyName,
@@ -82,6 +82,8 @@ namespace NetFrameSiteOnDrive
                 var t = request.Upload();
                 var updatedFile = request.ResponseBody;
             }
+
+            s_logger.Debug($"Wrote to file {copyName}");
         }
 
         public static Stream GenerateStreamFromString(string s)
